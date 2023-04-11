@@ -39,6 +39,7 @@ describe('EmailPane', () => {
       id: () => 1,
       ui: {
         avatar: () => false,
+        connectionLookup: () => false,
         allowAutocomplete: () => false
       }
     }));

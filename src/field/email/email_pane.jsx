@@ -6,6 +6,7 @@ import { swap, updateEntity } from '../../store/index';
 import * as l from '../../core/index';
 import { setEmail } from '../email';
 import { debouncedRequestAvatar, requestAvatar } from '../../avatar';
+import { debouncedRequestConnectionLookup, requestConnectionLookup } from '../../connection_lookup';
 
 export default class EmailPane extends React.Component {
   componentDidMount() {
@@ -13,12 +14,18 @@ export default class EmailPane extends React.Component {
     if (l.ui.avatar(lock) && c.email(lock)) {
       requestAvatar(l.id(lock), c.email(lock));
     }
+    if (l.ui.connectionLookup(lock) && c.email(lock)) {
+      requestConnectionLookup(l.id(lock), c.email(lock));
+    }
   }
 
   handleChange(e) {
     const { lock } = this.props;
     if (l.ui.avatar(lock)) {
       debouncedRequestAvatar(l.id(lock), e.target.value);
+    }
+    if (l.ui.connectionLookup(lock)) {
+      debouncedRequestConnectionLookup(l.id(lock), e.target.value);
     }
 
     swap(updateEntity, 'lock', l.id(lock), setEmail, e.target.value);

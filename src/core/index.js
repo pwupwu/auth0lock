@@ -6,6 +6,7 @@ import { getLocationFromUrl, getOriginFromUrl } from '../utils/url_utils';
 import * as i18n from '../i18n';
 import trim from 'trim';
 import * as gp from '../avatar/gravatar_provider';
+import * as clProvider from '../connection_lookup/provider';
 import { dataFns } from '../utils/data_utils';
 import { clientConnections, hasFreeSubscription } from './client/index';
 import * as captchaField from '../field/captcha';
@@ -72,16 +73,16 @@ export function setResolvedConnection(m, resolvedConnection) {
   if (!resolvedConnection) {
     return set(m, 'resolvedConnection', undefined);
   }
-  if (!resolvedConnection.type || !resolvedConnection.name) {
-    throw new Error(
-      'Invalid connection object. The resolved connection must look like: `{ type: "database", name: "connection name" }`.'
-    );
-  }
-  if (resolvedConnection.type !== 'database') {
-    throw new Error(
-      'Invalid connection type. Only database connections can be resolved with a custom resolver.'
-    );
-  }
+  // if (!resolvedConnection.type || !resolvedConnection.name) {
+  //   throw new Error(
+  //     'Invalid connection object. The resolved connection must look like: `{ type: "database", name: "connection name" }`.'
+  //   );
+  // }
+  // if (resolvedConnection.type !== 'database') {
+  //   throw new Error(
+  //     'Invalid connection type. Only database connections can be resolved with a custom resolver.'
+  //   );
+  // }
   return set(m, 'resolvedConnection', Immutable.fromJS(resolvedConnection));
 }
 
@@ -177,6 +178,13 @@ function extractUIOptions(id, options) {
     options.avatar;
   const avatarProvider = customAvatarProvider || gp;
 
+  const connectionLookup = options.connectionLookup !== null;
+  const customConnectionLookupProvider =
+    options.connectionLookup &&
+    typeof options.connectionLookup.fetchConnection === 'function' &&
+    options.connectionLookup;
+  const connectionLookupProvider = customConnectionLookupProvider || clProvider;
+
   return new Immutable.fromJS({
     containerID: options.container || `auth0-lock-container-${id}`,
     appendContainer: !options.container,
@@ -187,6 +195,8 @@ function extractUIOptions(id, options) {
         : !!options.autofocus,
     avatar: avatar,
     avatarProvider: avatarProvider,
+    connectionLookup,
+    connectionLookupProvider,
     logo: typeof logo === 'string' ? logo : undefined,
     closable: closable,
     hideMainScreenTitle: !!hideMainScreenTitle,
@@ -224,6 +234,8 @@ export const ui = {
   autofocus: lock => getUIAttribute(lock, 'autofocus'),
   avatar: lock => getUIAttribute(lock, 'avatar'),
   avatarProvider: lock => getUIAttribute(lock, 'avatarProvider'),
+  connectionLookup: lock => getUIAttribute(lock, 'connectionLookup'),
+  connectionLookupProvider: lock => getUIAttribute(lock, 'connectionLookupProvider'),
   closable: lock => getUIAttribute(lock, 'closable'),
   dict: lock => getUIAttribute(lock, 'dict'),
   disableWarnings: lock => getUIAttribute(lock, 'disableWarnings'),

@@ -42,9 +42,22 @@ import LastLoginScreen from '../core/sso/last_login_screen';
 import { hasError, isDone, isSuccess } from '../sync';
 import { getFieldValue } from '../field/index';
 import { swap, updateEntity } from '../store/index';
+import { dataFns } from '../utils/data_utils';
 
 export function isSSOEnabled(m, options) {
-  return matchesEnterpriseConnection(m, databaseUsernameValue(m, options));
+  var usernameValue = databaseUsernameValue(m, options);
+  return matchesEnterpriseConnection(m, usernameValue) || matchesConnectionLookup(m, usernameValue);
+}
+
+const { tget: emailConnectionGet, tset } = dataFns(['emailConnection']);
+
+export function matchesConnectionLookup(m, usernameValue) {
+  var connectionStr = emailConnectionGet(m, 'connectionStr');
+  if (connectionStr) {
+    console.log('connectionStr: ' + connectionStr);
+    return true;
+  }
+  return false;
 }
 
 export function matchesEnterpriseConnection(m, usernameValue) {

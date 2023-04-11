@@ -23,7 +23,7 @@ import {
   isHRDDomain
 } from '../../connection/enterprise';
 import SingleSignOnNotice from '../../connection/enterprise/single_sign_on_notice';
-import { hasOnlyClassicConnections, isSSOEnabled } from '../classic';
+import { hasOnlyClassicConnections, isSSOEnabled, matchesConnectionLookup } from '../classic';
 import * as i18n from '../../i18n';
 
 function shouldRenderTabs(m) {

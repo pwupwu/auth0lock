@@ -82,6 +82,12 @@ export function matchConnection(m, email, strategies = []) {
   });
 }
 
+export function matchConnectionByName(m, name, strategies = []) {
+  return l.connections(m, 'enterprise', ...strategies).find(x => {
+    return x.get('name') === name;
+  });
+}
+
 export function isEnterpriseDomain(m, email, strategies = []) {
   return !!matchConnection(m, email, strategies);
 }
