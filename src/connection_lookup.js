@@ -9,6 +9,9 @@ const { tget, tset } = dataFns(['emailConnection']);
 const cache = {};
 
 export function requestConnectionLookup(id, emailInput) {
+  if (!emailInput) {
+    return;
+  }
   const provider = l.ui.connectionLookupProvider(read(getEntity, 'lock', id)).toJS();
 
   swap(updateEntity, 'lock', id, m => {

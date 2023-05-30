@@ -37,14 +37,14 @@ export function logIn(id) {
   const m = read(getEntity, 'lock', id);
   const email = getFieldValue(m, databaseLogInWithEmail(m) ? 'email' : 'username');
   const ssoConnection = matchConnection(m, email);
-  if (ssoConnection && !isHRDActive(m)) {
-    return logInSSO(id, ssoConnection);
-  }
   // might have connection from email lookup
   const connectionStr = tget(m, 'connectionStr');
   const emailConnection = matchConnectionByName(m, connectionStr);
   if (emailConnection && !isHRDActive(m)) {
     return logInSSO(id, emailConnection);
+  }
+  if (ssoConnection && !isHRDActive(m)) {
+    return logInSSO(id, ssoConnection);
   }
 
   logInActiveFlow(id);
