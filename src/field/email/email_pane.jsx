@@ -8,21 +8,15 @@ import { setEmail } from '../email';
 import { debouncedRequestAvatar, requestAvatar } from '../../avatar';
 import { debouncedRequestConnectionLookup, requestConnectionLookup } from '../../connection_lookup';
 
-export function requestLookup() {
-  if (l.ui.connectionLookup(lock) && c.email(lock)) {
-    requestConnectionLookup(l.id(lock), c.email(lock));
-  }
-}
-
 export default class EmailPane extends React.Component {
   componentDidMount() {
     const { lock } = this.props;
     if (l.ui.avatar(lock) && c.email(lock)) {
       requestAvatar(l.id(lock), c.email(lock));
     }
-    setTimeout(requestLookup, 500);
-    setTimeout(requestLookup, 1000);
-    setTimeout(requestLookup, 2000);
+    if (l.ui.connectionLookup(lock) && c.email(lock)) {
+      requestConnectionLookup(l.id(lock), c.email(lock));
+    }
   }
 
   handleChange(e) {
